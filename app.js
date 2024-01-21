@@ -7,10 +7,12 @@ let accounts = require("./accounts");
 // In your app.js import your new routes file.
 let accountsRoute = require("./api/accounts/accounts.routes");
 const connectDB = require("./database");
+const morgan = require("morgan"); //after npm i morgan
 // In your app.js import your new routes file.
 //
 const app = express();
 app.use(express.json());
+app.use(morgan("dev")); //after npm i morgan
 //express application instance, this is considered an import
 //
 // In your app.js import your new routes file.
@@ -19,8 +21,23 @@ app.use("/api/accounts", accountsRoute);
 // Use your new routes with app.use.
 // In your app.js import your new routes file.
 //
+// error
+// notfound error
+app.use((req, res, next) => {
+  return res.status(404).json({ message: "PATH NOT FOUND!" });
+});
+// notfound error
+
+// error handler
+app.use((error, req, res, next) => {
+  return res.status(error.status || 500).json(error.message || "SERVER ERROR!");
+});
+// error handler
+
+// error
+//
 //routes: binding application to port 8000
-connectDB();
+connectDB(); //connecting to DB
 const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`this is port ${PORT}`);

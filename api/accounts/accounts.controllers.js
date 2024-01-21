@@ -6,12 +6,13 @@ const Account = require("../../models/Account_");
 //Import the accounts.js data file in your controllers file
 //
 //
-const getAllAccounts = async (req, res) => {
+const getAllAccounts = async (req, res, next) => {
   try {
     const accounts = await Account.find();
     return res.json(accounts);
   } catch (error) {
-    return res.status(500).json(error);
+    next(error);
+    // return res.status(500).json(error);
   }
 };
 //
@@ -28,16 +29,29 @@ const getAllAccounts = async (req, res) => {
 //
 //
 //getAccountById
-const getAccountById = async (req, res) => {
+const getAccountById = async (req, res, next) => {
+  //new way
+  //new way
   try {
-    const _id = req.params._id;
-    console.log(_id);
-    const account = await Account.findById(_id, req.body);
-    return res.status(200).json(account);
+    return res.status(200).json(req.account);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json("Server error");
+    next(error);
   }
+  //new way
+  //new way
+  //old way
+  // try {
+  //   const _id = req.params._id;
+  //   console.log(_id);
+  //   const account = await Account.findById(_id, req.body);
+  //   //if !account here
+  //   return res.status(200).json(account);
+  // } catch (error) {
+  //   next(error);
+  //   // console.log(error);
+  //   // return res.status(500).json("Server error");
+  // }
+  //old way
 };
 //getAccountById
 
@@ -45,14 +59,15 @@ const getAccountById = async (req, res) => {
 //
 //new account
 
-const accountCreate = async (req, res) => {
+const accountCreate = async (req, res, next) => {
   //
   try {
     const account = await Account.create(req.body);
     return res.status(201).json();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json("Server error");
+    next(error);
+    // console.log(error);
+    // return res.status(500).json("Server error");
   }
 };
 
@@ -66,15 +81,27 @@ const accountCreate = async (req, res) => {
 //new account
 //
 //Delete Account
-const deleteAccount = async (req, res) => {
+const deleteAccount = async (req, res, next) => {
+  //new way
   try {
-    const _id = req.params._id;
-    await Account.findByIdAndDelete(_id, req.body);
+    await req.account.deleteOne();
     return res.status(204).end();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json("Server error");
+    next(error);
   }
+  //new way
+  //
+  //old way
+  // try {
+  //   const _id = req.params._id;
+  //   await Account.findByIdAndDelete(_id, req.body);
+  //   return res.status(204).end();
+  // } catch (error) {
+  //   next(error);
+  //   // console.log(error);
+  //   // return res.status(500).json("Server error");
+  // }
+  //old way
 };
 
 //
@@ -96,14 +123,16 @@ const deleteAccount = async (req, res) => {
 //Delete Account
 //
 //Update Account
-const updateAccount = async (req, res) => {
+const updateAccount = async (req, res, next) => {
   try {
-    const _id = req.params._id;
-    await Account.findByIdAndUpdate(_id, req.body);
+    // const _id = req.params._id;
+    // await Account.findByIdAndUpdate(_id, req.body);
+    await req.account.updateOne(req.body);
     return res.status(204).end();
   } catch (error) {
-    console.log(eror);
-    return res.status(500).json("Server error");
+    next(error);
+    // console.log(eror);
+    // return res.status(500).json("Server error");
   }
   // const accountId = req.params.id;
   // const account = accounts.find((account) => {

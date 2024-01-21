@@ -10,7 +10,20 @@ const {
   getAllAccounts,
   getAccountById,
 } = require("./accounts.controllers");
+const Account_ = require("../../models/Account_");
 const router = express.Router();
+//
+//middleware check
+router.param("_id", async (req, res, next, _id) => {
+  const account = await Account_.findById(_id);
+  if (!account) {
+    return res.status(404).json({ message: "THIS ID IS INVALID!" });
+  }
+  req.account = account;
+  next();
+});
+//middleware check
+//
 //routes
 router.get("/", getAllAccounts);
 router.post("/", accountCreate);
